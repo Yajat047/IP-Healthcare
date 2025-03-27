@@ -13,7 +13,7 @@ CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
 logging.basicConfig(level=logging.DEBUG)
 
 try:
-    model = pickle.load(open(fileName, 'rb'))
+    model = pickle.load(open('heart.pkl', 'rb'))
     app.logger.info("Model loaded successfully")
 except Exception as e:
     app.logger.error(f"Error loading model: {e}")
