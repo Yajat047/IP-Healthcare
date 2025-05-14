@@ -104,7 +104,7 @@ const AddDoctor = () => {
       );
 
       toast.success(data.message);
-      navigateTo("/admin/doctors");
+      navigateTo("/doctors");
     } catch (error) {
       toast.error(error.response?.data?.message || "An error occurred");
     }

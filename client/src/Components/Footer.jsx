@@ -28,7 +28,7 @@ export const Footer = () => {
           </li>
           <li className="flex items-center">
             <img src="/pin.png" alt="" className="w-4 h-4" />
-            <h6 className="text-slate-600">&nbsp;Burdwan,WB</h6>
+            <h6 className="text-slate-600">&nbsp;Chandigarh,India</h6>
           </li>
         </ul>
       </div>
