@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Appointment from "./Pages/Appointment";
 import About from "./Pages/About";
 import QuickHelp from "./Pages/QuickHelp";
-import Login from "./Pages/Login";
+import Login from "./Pages/login";
 import Register from "./Pages/Register";
 import DiabetesPredictor from "./Pages/DiabetesPredictor";
 import ThyroidPredictor from "./Pages/ThyroidPredictor";
