@@ -11,8 +11,9 @@ export const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      let logoutUrl = "http://localhost:8000/api/v1/users/";
-      
+      // let logoutUrl = "http://localhost:8000/api/v1/users/";
+      let logoutUrl = "http://localhost:5173/";
+
       // Determine which type of user is logged in
       if (localStorage.getItem("patient")) {
         logoutUrl += "patient/logout";
