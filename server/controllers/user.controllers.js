@@ -248,7 +248,10 @@ export const logoutAdmin = asyncHandler(async (req, res, next) => {
     .status(200)
     .cookie("adminToken", "", {
       httpOnly: true,
-      expiresIn: new Date(Date.now()),
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      expires: new Date(0),
+      path: "/"
     })
     .json({
       success: true,
@@ -262,7 +265,10 @@ export const logoutPatient = asyncHandler(async (req, res, next) => {
     .status(200)
     .cookie("patientToken", "", {
       httpOnly: true,
-      expiresIn: new Date(Date.now()),
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      expires: new Date(0),
+      path: "/"
     })
     .json({
       success: true,
@@ -270,13 +276,16 @@ export const logoutPatient = asyncHandler(async (req, res, next) => {
     });
 });
 
-// Logout function for frontend patient
+// Logout function for frontend doctor
 export const logoutDoctor = asyncHandler(async (req, res, next) => {
   res
     .status(200)
     .cookie("doctorToken", "", {
       httpOnly: true,
-      expiresIn: new Date(Date.now()),
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      expires: new Date(0),
+      path: "/"
     })
     .json({
       success: true,

@@ -3,6 +3,22 @@ import ErrorHandler from "./error.middlewares.js";
 import jwt from "jsonwebtoken";
 import {User} from "../models/user.model.js"
 
+export const verifyToken = asyncHandler(async (req, res, next) => {
+    const token = req.cookies.adminToken || req.cookies.patientToken || req.cookies.doctorToken;
+    if (!token) {
+        return next(new ErrorHandler("User is not authenticated", 400));
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = await User.findById(decoded.id);
+    
+    if (!req.user) {
+        return next(new ErrorHandler("User not found", 404));
+    }
+    
+    next();
+});
+
 export const isAdminAuthenticated=asyncHandler(async (req,res,next)=>{
     // console.log(req.cookies)
     const token= req.cookies.adminToken;

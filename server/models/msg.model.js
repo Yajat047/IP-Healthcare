@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import validator from "validator";
 
 const msgSchema=new mongoose.Schema(
     {
@@ -16,13 +16,20 @@ const msgSchema=new mongoose.Schema(
         email:{
             type:String,
             required:true,
-            //minLength: [validator.isEmail, "Please Provide A Valid Email!"]
+            validate: {
+                validator: validator.isEmail,
+                message: "Please provide a valid email address"
+            }
         },
         phone:{
             type:String,
             required:true,
-            minLength: [10, "Phone Number Must Contain Exact 10 Digits!"],
-            maxLength: [10, "Phone Number Must Contain Exact 10 Digits!"],
+            validate: {
+                validator: function(v) {
+                    return /^\d{10}$/.test(v);
+                },
+                message: "Phone number must be exactly 10 digits"
+            }
         },
         message:{
             type:String,

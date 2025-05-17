@@ -7,6 +7,7 @@ import userRouter from "./routes/user.routes.js";
 import cookieParser from "cookie-parser";
 import messageRouter from "./routes/msg.routes.js";
 import appointmentRouter from "./routes/appoinment.routes.js";
+import prescriptionRouter from "./routes/prescription.routes.js";
 import path from "path";
 dotenv.config({ path: "./.env" });
 const app = express();
@@ -20,6 +21,7 @@ app.use(
     methods: "GET,POST,PUT,DELETE",
     allowedHeaders: "Content-Type,Authorization",
     credentials: true,
+    exposedHeaders: ["Set-Cookie"],
   })
 );
 app.use(cookieParser());
@@ -48,6 +50,7 @@ app.get("/", (req, res) =>
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/message", messageRouter);
 app.use("/api/v1/appoinments", appointmentRouter);
+app.use("/api/v1/prescriptions", prescriptionRouter);
 
 //error-middleware
 app.use(errorMiddleware);
