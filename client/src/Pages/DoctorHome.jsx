@@ -10,6 +10,7 @@ import { TicketX } from "lucide-react";
 import { TicketCheck } from "lucide-react";
 import { FileText, Pencil, Trash2 } from "lucide-react";
 import PrescriptionView from "../Components/PrescriptionView";
+import DoctorScheduleEditor from '../Components/DoctorScheduleEditor';
 
 const DoctorHome = () => {
   const { isAuthenticated } = useContext(Context);
@@ -28,9 +29,9 @@ const DoctorHome = () => {
   });
 
   useEffect(() => {
-    const doctor = localStorage.getItem("doctor");
-    if (doctor) {
-      setDoctorData(JSON.parse(doctor));
+    const storedDoctor = localStorage.getItem("doctor");
+    if (storedDoctor) {
+      setDoctorData(JSON.parse(storedDoctor));
     }
     setIsLoading(false);
   }, []);
@@ -64,6 +65,23 @@ const DoctorHome = () => {
       }
     };
     fetchAppointments();
+  }, []);
+
+  useEffect(() => {
+    const fetchDoctorDetails = async () => {
+      try {
+        const storedDoctor = JSON.parse(localStorage.getItem('doctor'));
+        const response = await axios.get(
+          `http://localhost:8000/api/v1/users/doctors/${storedDoctor._id}`,
+          { withCredentials: true }
+        );
+        setDoctorData(response.data.doctor);
+      } catch (error) {
+        console.error("Failed to fetch doctor details:", error);
+      }
+    };
+
+    fetchDoctorDetails();
   }, []);
 
   const handleUpdateStatus = async (appointmentId, status) => {
@@ -194,20 +212,17 @@ const DoctorHome = () => {
     return <div>Loading...</div>;
   }
 
-  // Check for doctor data in localStorage
-  const doctor = localStorage.getItem("doctor");
-  if (!doctor) {
+  // Check for doctor data
+  if (!doctorData) {
     return <Navigate to="/login" />;
   }
 
-  // Parse doctor data
-  const parsedDoctor = JSON.parse(doctor);
-  if (parsedDoctor.role !== "Doctor") {
+  if (doctorData.role !== "Doctor") {
     return <Navigate to="/login" />;
   }
 
   const appointmentCount = appointments.filter(
-    (obj) => obj.doctorId === parsedDoctor._id
+    (obj) => obj.doctorId === doctorData._id
   ).length;
 
   return (
@@ -217,16 +232,16 @@ const DoctorHome = () => {
         <div className="w-1/3 font-semibold text-3xl flex gap-5 items-center">
           <img
             className="w-28 h-28 rounded-full border-2 border-emerald-300 object-cover"
-            src={parsedDoctor?.avatar?.url || "/default-avatar.png"}
-            alt={`Dr. ${parsedDoctor.firstName} ${parsedDoctor.lastName}`}
+            src={doctorData?.avatar?.url || "/default-avatar.png"}
+            alt={`Dr. ${doctorData.firstName} ${doctorData.lastName}`}
             onError={(e) => {
               e.target.onerror = null;
               e.target.src = "/default-avatar.png";
             }}
           />
           <div className="h-full flex flex-col justify-center">
-            <h1>Hi, Dr. {parsedDoctor.firstName + " " + parsedDoctor.lastName}</h1>
-            <h1>{parsedDoctor.doctorDepartment}</h1>
+            <h1>Hi, Dr. {doctorData.firstName + " " + doctorData.lastName}</h1>
+            <h1>{doctorData.doctorDepartment}</h1>
           </div>
         </div>
         <div className="w-1/3 flex h-full bg-[#76dbcf] p-4 font-semibold text-2xl rounded-3xl items-center justify-center">
@@ -248,8 +263,8 @@ const DoctorHome = () => {
           <tbody>
             {appointments.length > 0 ? (
               appointments.map((appointment) => (
-                appointment.doctor.firstName === parsedDoctor.firstName &&
-                appointment.doctor.lastName === parsedDoctor.lastName && (
+                appointment.doctor.firstName === doctorData.firstName &&
+                appointment.doctor.lastName === doctorData.lastName && (
                   <tr key={appointment._id}>
                     <td className="name text-center rounded-l-2xl">
                       {appointment.firstName} {appointment.lastName}
@@ -482,6 +497,17 @@ const DoctorHome = () => {
           </div>
         </div>
       )}
+
+      <div className="p-8">
+        <h1 className="text-3xl font-bold mb-6">Doctor Dashboard</h1>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <h2 className="text-2xl font-semibold mb-4">Your Schedule</h2>
+            <DoctorScheduleEditor doctor={doctorData} onUpdate={setDoctorData} />
+          </div>
+          {/* Add other dashboard components here */}
+        </div>
+      </div>
     </div>
   );
 };

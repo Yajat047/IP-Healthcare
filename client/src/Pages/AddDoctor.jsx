@@ -19,6 +19,17 @@ const AddDoctor = () => {
   const [doctorDepartment, setDoctorDepartment] = useState("");
   const [docAvatar, setDocAvatar] = useState("");
   const [docAvatarPreview, setDocAvatarPreview] = useState("");
+  const [startTime, setStartTime] = useState("09:00");
+  const [endTime, setEndTime] = useState("17:00");
+  const [workingDays, setWorkingDays] = useState({
+    Monday: true,
+    Tuesday: true,
+    Wednesday: true,
+    Thursday: true,
+    Friday: true,
+    Saturday: false,
+    Sunday: false
+  });
 
   const navigateTo = useNavigate();
 
@@ -42,6 +53,13 @@ const AddDoctor = () => {
       setDocAvatarPreview(reader.result);
       setDocAvatar(file);
     };
+  };
+
+  const handleWorkingDayChange = (day) => {
+    setWorkingDays(prev => ({
+      ...prev,
+      [day]: !prev[day]
+    }));
   };
 
   const handleAddNewDoctor = async (e) => {
@@ -79,6 +97,12 @@ const AddDoctor = () => {
       return;
     }
 
+    // Time validation
+    if (new Date(`2000-01-01T${startTime}`) >= new Date(`2000-01-01T${endTime}`)) {
+      toast.error("End time must be after start time");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("firstName", firstName.trim());
     formData.append("lastName", lastName.trim());
@@ -90,6 +114,9 @@ const AddDoctor = () => {
     formData.append("password", password);
     formData.append("doctorDepartment", doctorDepartment);
     formData.append("avatar", docAvatar);
+    formData.append("startTime", startTime);
+    formData.append("endTime", endTime);
+    formData.append("workingDays", JSON.stringify(workingDays));
 
     try {
       const { data } = await axios.post(
@@ -117,137 +144,167 @@ const AddDoctor = () => {
   return (
     <div className="flex">
       <Sidebar />
-      <div className="w-full flex items-center">
-        <div className="w-full pl-7 pt-7 pr-7">
-          <div className="add-admin-form bg-sky-200 w-full h-fit rounded-2xl px-5 py-3 flex flex-col items-center">
-            <h1 className="font-semibold text-3xl mt-3 mb-5">Add New Doctor</h1>
-            <div className="w-full h-fit mb-10">
-              <form onSubmit={handleAddNewDoctor}>
-                <div className="flex justify-around mb-6 items-center">
-                  <input
-                    className="h-10 bg-zinc-200 rounded-2xl px-4 items-center"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleAvatar}
-                    required
-                  />
-                  {docAvatarPreview && (
-                    <img
-                      src={docAvatarPreview}
-                      alt="Preview"
-                      className="h-20 w-20 rounded-full object-cover"
-                    />
-                  )}
-                </div>
-                <div className="flex justify-around mb-6">
-                  <input
-                    className="w-1/3 h-10 bg-zinc-200 rounded-2xl px-4"
-                    type="text"
-                    placeholder="First Name *"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    required
-                  />
-                  <input
-                    className="w-1/3 h-10 bg-zinc-200 rounded-2xl px-4"
-                    type="text"
-                    placeholder="Last Name *"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    required
-                  />
-                </div>
-                <div className="flex justify-around mb-6">
-                  <input
-                    className="w-1/3 h-10 bg-zinc-200 rounded-2xl px-4"
-                    type="email"
-                    placeholder="Email *"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
-                  <input
-                    className="w-1/3 h-10 bg-zinc-200 rounded-2xl px-4"
-                    type="tel"
-                    placeholder="Mobile Number *"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    pattern="[0-9]{10}"
-                    required
-                  />
-                </div>
-                <div className="w-full flex justify-around mb-6">
-                  <input
-                    className="w-96 h-10 bg-zinc-200 rounded-2xl px-4 outline-none"
-                    type="text"
-                    placeholder="Aadhar No. (Optional)"
-                    value={nic}
-                    onChange={(e) => setNic(e.target.value)}
-                    pattern="[0-9]{12}"
-                  />
-                  <input
-                    className="w-96 h-10 bg-zinc-200 rounded-2xl px-4 outline-none"
-                    type="date"
-                    placeholder="Date Of Birth *"
-                    value={dob}
-                    onChange={(e) => setDob(e.target.value)}
-                    required
-                    max={new Date().toISOString().split('T')[0]}
-                  />
-                </div>
-                <div className="flex justify-around mb-6">
-                  <label className="w-1/3 h-10 bg-zinc-200 rounded-2xl px-4">
-                    <select
-                      className="w-full h-10 bg-zinc-200 rounded-2xl border-0"
-                      value={gender}
-                      onChange={(e) => setGender(e.target.value)}
-                      required
-                    >
-                      <option value="">Select Gender *</option>
-                      <option value="Male">Male</option>
-                      <option value="Female">Female</option>
-                      <option value="Other">Other</option>
-                    </select>
-                  </label>
-                  <input
-                    className="w-1/3 h-10 bg-zinc-200 rounded-2xl px-4"
-                    type="password"
-                    placeholder="Password *"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    minLength={8}
-                  />
-                </div>
-                <div className="w-full flex justify-center">
-                  <label className="w-1/3 h-10 bg-zinc-200 rounded-2xl px-4">
-                    <select
-                      className="w-full h-10 bg-zinc-200 rounded-2xl border-0"
-                      value={doctorDepartment}
-                      onChange={(e) => setDoctorDepartment(e.target.value)}
-                      required
-                    >
-                      <option value="">Select Department *</option>
-                      {departmentsArray.map((depart, index) => (
-                        <option value={depart} key={index}>
-                          {depart}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                </div>
-                <div className="flex w-full justify-center mt-6">
-                  <button
-                    className="w-96 bg-[#76dbcf] rounded-2xl h-10 font-semibold"
-                    type="submit"
-                  >
-                    ADD NEW DOCTOR
-                  </button>
-                </div>
-              </form>
+      <div className="w-full p-8">
+        <h2 className="text-3xl font-bold mb-6">Add New Doctor</h2>
+        <form onSubmit={handleAddNewDoctor} className="space-y-6">
+          <div className="grid grid-cols-2 gap-6">
+            <div>
+              <label className="block mb-2">First Name</label>
+              <input
+                type="text"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                className="w-full p-2 border rounded"
+                required
+              />
+            </div>
+            <div>
+              <label className="block mb-2">Last Name</label>
+              <input
+                type="text"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                className="w-full p-2 border rounded"
+                required
+              />
+            </div>
+            <div>
+              <label className="block mb-2">Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full p-2 border rounded"
+                required
+              />
+            </div>
+            <div>
+              <label className="block mb-2">Phone</label>
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="w-full p-2 border rounded"
+                required
+              />
+            </div>
+            <div>
+              <label className="block mb-2">NIC (Optional)</label>
+              <input
+                type="text"
+                value={nic}
+                onChange={(e) => setNic(e.target.value)}
+                className="w-full p-2 border rounded"
+              />
+            </div>
+            <div>
+              <label className="block mb-2">Date of Birth</label>
+              <input
+                type="date"
+                value={dob}
+                onChange={(e) => setDob(e.target.value)}
+                className="w-full p-2 border rounded"
+                required
+              />
+            </div>
+            <div>
+              <label className="block mb-2">Gender</label>
+              <select
+                value={gender}
+                onChange={(e) => setGender(e.target.value)}
+                className="w-full p-2 border rounded"
+                required
+              >
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div>
+              <label className="block mb-2">Department</label>
+              <select
+                value={doctorDepartment}
+                onChange={(e) => setDoctorDepartment(e.target.value)}
+                className="w-full p-2 border rounded"
+                required
+              >
+                <option value="">Select Department</option>
+                {departmentsArray.map((dept) => (
+                  <option key={dept} value={dept}>
+                    {dept}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block mb-2">Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full p-2 border rounded"
+                required
+                minLength={8}
+              />
+            </div>
+            <div>
+              <label className="block mb-2">Profile Picture</label>
+              <input
+                type="file"
+                onChange={handleAvatar}
+                className="w-full p-2 border rounded"
+                accept="image/*"
+                required
+              />
+            </div>
+            <div>
+              <label className="block mb-2">Start Time</label>
+              <input
+                type="time"
+                value={startTime}
+                onChange={(e) => setStartTime(e.target.value)}
+                className="w-full p-2 border rounded"
+                required
+              />
+            </div>
+            <div>
+              <label className="block mb-2">End Time</label>
+              <input
+                type="time"
+                value={endTime}
+                onChange={(e) => setEndTime(e.target.value)}
+                className="w-full p-2 border rounded"
+                required
+              />
             </div>
           </div>
-        </div>
+
+          <div className="mt-6">
+            <label className="block mb-2">Working Days</label>
+            <div className="grid grid-cols-7 gap-2">
+              {Object.keys(workingDays).map((day) => (
+                <div key={day} className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id={day}
+                    checked={workingDays[day]}
+                    onChange={() => handleWorkingDayChange(day)}
+                    className="mr-2"
+                  />
+                  <label htmlFor={day}>{day.slice(0, 3)}</label>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600"
+          >
+            Add Doctor
+          </button>
+        </form>
       </div>
     </div>
   );

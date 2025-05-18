@@ -98,12 +98,6 @@ const Register = () => {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        style: {
-          background: "#4CAF50",
-          color: "white",
-          fontSize: "16px",
-          fontWeight: "bold",
-        },
       });
 
       // Clear form
