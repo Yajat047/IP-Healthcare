@@ -9,6 +9,7 @@ import axios from "axios";
 
 const Register = () => {
   const { isAuthenticated, setIsAuthenticated } = useContext(Context);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -29,10 +30,12 @@ const Register = () => {
 
   const handleRegistration = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     
     // Basic validation
     if (!firstName || !lastName || !email || !phone || !dob || !gender || !password) {
       toast.error("Please fill all required fields");
+      setIsLoading(false);
       return;
     }
 
@@ -40,18 +43,21 @@ const Register = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       toast.error("Please enter a valid email address");
+      setIsLoading(false);
       return;
     }
 
     // Phone validation
     if (!/^\d{10}$/.test(phone)) {
       toast.error("Phone number must be exactly 10 digits");
+      setIsLoading(false);
       return;
     }
 
     // Aadhar validation (if provided)
     if (nic && !/^\d{12}$/.test(nic)) {
       toast.error("Aadhar number must be exactly 12 digits");
+      setIsLoading(false);
       return;
     }
 
@@ -59,6 +65,7 @@ const Register = () => {
     const selectedDate = new Date(dob);
     if (selectedDate >= new Date()) {
       toast.error("Date of birth must be in the past");
+      setIsLoading(false);
       return;
     }
 
@@ -82,10 +89,23 @@ const Register = () => {
         }
       );
 
-      toast.success(data.message);
-      setIsAuthenticated(true);
-      navigateTo("/");
-      
+      // Show success toast with custom styling
+      toast.success("Registration Successful! Redirecting to login...", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        style: {
+          background: "#4CAF50",
+          color: "white",
+          fontSize: "16px",
+          fontWeight: "bold",
+        },
+      });
+
       // Clear form
       setFirstName("");
       setLastName("");
@@ -95,8 +115,16 @@ const Register = () => {
       setDob("");
       setGender("");
       setPassword("");
+
+      // Redirect after a short delay
+      setTimeout(() => {
+        navigateTo("/login");
+      }, 2000);
+
     } catch (error) {
       toast.error(error.response?.data?.message || "Registration failed");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -109,11 +137,11 @@ const Register = () => {
       <div className="flex">
         <div className="w-1/3 h-screen bg-[#76dbcf] flex flex-col place-content-center items-center rounded-r-full">
           <h2 className="text-4xl flex w-full justify-center font-bold">
-            Hello, We are Aaragya!!
+            Hello, Welcome!!
           </h2>
           <IoRemoveOutline size={80} />
           <p className="text-2xl flex w-full justify-center mb-6">
-            Already Have a Account !!!
+            Already Have An Account !!!
           </p>
           <button
             className="w-40 rounded-2xl h-10 font-semibold border-solid border-2 border-black"
@@ -217,12 +245,13 @@ const Register = () => {
                   minLength={8}
                 />
               </div>
-              <div className="flex w-full justify-center mt-3">
+              <div className="flex w-full justify-center">
                 <button
-                  className="w-96 bg-[#76dbcf] rounded-2xl h-10 font-semibold"
+                  className="w-96 bg-[#76dbcf] rounded-2xl h-10 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                   type="submit"
+                  disabled={isLoading}
                 >
-                  REGISTER
+                  {isLoading ? "Registering..." : "Register"}
                 </button>
               </div>
             </form>

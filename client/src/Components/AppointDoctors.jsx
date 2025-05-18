@@ -19,7 +19,15 @@ const AppointDoctors = ({ data, onClick }) => {
       className="flex  bg-white box-border h-fit w-52 rounded-3xl p-4 border-4 shadow-[0_24px_40px_-15px_rgba(0,0,0,0.3)] flex-col items-center mx-14 mb-10"
     >
       <div className="w-28 h-28 rounded-full border-2 border-emerald-300 mb-2">
-        <img className="w-28 h-28 rounded-full" src={data.avatar && data.avatar.url} alt="" />
+        <img 
+          className="w-28 h-28 rounded-full object-cover" 
+          src={data.avatar?.url || "/default-avatar.png"} 
+          alt={`${data.firstName} ${data.lastName}`}
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = "/default-avatar.png";
+          }}
+        />
       </div>
       <h1 className="text-black font-semibold text-xl ">
         {data.firstName}

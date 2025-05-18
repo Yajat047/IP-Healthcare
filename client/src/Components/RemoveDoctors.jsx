@@ -28,9 +28,13 @@ const RemoveDoctors = ({ data }) => {
     >
       <div className="w-28 h-28 rounded-full border-2 border-emerald-300 mb-2">
         <img
-          className="w-28 h-28 rounded-full"
-          src={data.avatar && data.avatar.url}
-          alt=""
+          className="w-28 h-28 rounded-full object-cover"
+          src={data.avatar?.url || "/default-avatar.png"}
+          alt={`${data.firstName} ${data.lastName}`}
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = "/default-avatar.png";
+          }}
         />
       </div>
       <h1 className="text-black font-semibold text-xl ">{data.firstName}</h1>

@@ -216,9 +216,13 @@ const DoctorHome = () => {
       <div className="h-28 flex justify-around mt-10">
         <div className="w-1/3 font-semibold text-3xl flex gap-5 items-center">
           <img
-            className="w-28 h-28 rounded-full border-2 border-emerald-300"
+            className="w-28 h-28 rounded-full border-2 border-emerald-300 object-cover"
             src={parsedDoctor?.avatar?.url || "/default-avatar.png"}
-            alt="Doctor Avatar"
+            alt={`Dr. ${parsedDoctor.firstName} ${parsedDoctor.lastName}`}
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = "/default-avatar.png";
+            }}
           />
           <div className="h-full flex flex-col justify-center">
             <h1>Hi, Dr. {parsedDoctor.firstName + " " + parsedDoctor.lastName}</h1>
