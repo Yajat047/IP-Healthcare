@@ -182,7 +182,7 @@ export const registerDoctor = asyncHandler(async (req, res, next) => {
     doctorDepartment,
     role: "Doctor",
     avatar: {
-      url: `/uploads/${req.file.filename}`,
+      url: `http://localhost:8000/uploads/${req.file.filename}`,
     },
   });
 
@@ -402,7 +402,7 @@ export const updateDoctor = asyncHandler(async (req, res, next) => {
     }
 
     doctor.avatar = {
-      url: `/uploads/${req.file.filename}`,
+      url: `http://localhost:8000/uploads/${req.file.filename}`,
     };
   }
 
