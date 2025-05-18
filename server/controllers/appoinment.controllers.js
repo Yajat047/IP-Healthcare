@@ -12,6 +12,7 @@ const postAppointment = asyncHandler(async (req, res, next) => {
     dob,
     gender,
     appointment_date,
+    appointment_time,
     department,
     doctor_firstName,
     doctor_lastName,
@@ -28,6 +29,7 @@ const postAppointment = asyncHandler(async (req, res, next) => {
     !dob ||
     !gender ||
     !appointment_date ||
+    !appointment_time ||
     !department ||
     !doctor_firstName ||
     !doctor_lastName ||
@@ -84,30 +86,50 @@ const postAppointment = asyncHandler(async (req, res, next) => {
   const doctorId = isConflict[0]._id;
   const patientId = req.user._id;
 
-  const appointment = await Appointment.create({
-    firstName: firstName.trim(),
-    lastName: lastName.trim(),
-    email: email.trim().toLowerCase(),
-    phone,
-    dob,
-    gender,
-    appointment_date,
-    department,
-    doctor: {
-      firstName: doctor_firstName,
-      lastName: doctor_lastName,
-    },
-    hasVisited,
-    address: address.trim(),
+  // Check for double booking
+  const existingAppointment = await Appointment.findOne({
     doctorId,
-    patientId,
+    appointment_date,
+    appointment_time,
+    status: { $ne: "Rejected" } // Don't count rejected appointments
   });
 
-  res.status(200).json({
-    success: true,
-    message: "Appointment booked successfully!",
-    appointment,
-  });
+  if (existingAppointment) {
+    return next(new ErrorHandler("This time slot is already booked. Please select another time.", 400));
+  }
+
+  try {
+    const appointment = await Appointment.create({
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      email: email.trim().toLowerCase(),
+      phone,
+      dob,
+      gender,
+      appointment_date,
+      appointment_time,
+      department,
+      doctor: {
+        firstName: doctor_firstName,
+        lastName: doctor_lastName,
+      },
+      hasVisited,
+      address: address.trim(),
+      doctorId,
+      patientId,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Appointment booked successfully!",
+      appointment,
+    });
+  } catch (error) {
+    if (error.code === 11000) {
+      return next(new ErrorHandler("This time slot is already booked. Please select another time.", 400));
+    }
+    return next(new ErrorHandler(error.message, 500));
+  }
 });
 
 const getAllAppointments = asyncHandler(async (req, res, next) => {
@@ -148,9 +170,43 @@ const deleteAppointment = asyncHandler(async (req, res, next) => {
   });
 });
 
+const getBookedSlots = asyncHandler(async (req, res, next) => {
+  const { doctorId, date } = req.params;
+
+  // Validate doctorId
+  if (!doctorId) {
+    return next(new ErrorHandler("Doctor ID is required", 400));
+  }
+
+  // Validate date format
+  const appointmentDate = new Date(date);
+  if (isNaN(appointmentDate.getTime())) {
+    return next(new ErrorHandler("Invalid date format", 400));
+  }
+
+  // Find all appointments for the doctor on the specified date
+  const bookedSlots = await Appointment.find({
+    doctorId,
+    appointment_date: {
+      $gte: new Date(date),
+      $lt: new Date(new Date(date).setDate(new Date(date).getDate() + 1))
+    },
+    status: { $ne: "Rejected" } // Don't include rejected appointments
+  }).select('appointment_time');
+
+  // Extract just the time slots
+  const bookedTimeSlots = bookedSlots.map(slot => slot.appointment_time);
+
+  res.status(200).json({
+    success: true,
+    bookedSlots: bookedTimeSlots
+  });
+});
+
 export {
   postAppointment,
   getAllAppointments,
   updateAppointmentStatus,
   deleteAppointment,
+  getBookedSlots
 };

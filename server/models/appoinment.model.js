@@ -58,6 +58,10 @@ const appointmentSchema = new mongoose.Schema({
       message: "Appointment date must be in the future"
     }
   },
+  appointment_time: {
+    type: String,
+    required: [true, "Appointment Time Is Required!"],
+  },
   department: {
     type: String,
     required: [true, "Department Name Is Required!"],
@@ -95,5 +99,8 @@ const appointmentSchema = new mongoose.Schema({
     default: "Pending",
   },
 });
+
+// Add compound index for doctor, date, and time to prevent double bookings
+appointmentSchema.index({ doctorId: 1, appointment_date: 1, appointment_time: 1 }, { unique: true });
 
 export const Appointment = mongoose.model("Appointment", appointmentSchema);

@@ -436,3 +436,22 @@ export const deleteDoctor = asyncHandler(async (req, res) => {
     res.status(400).json(resModel(false, "Failed to delete Doctor", error));
   }
 });
+
+export const getDoctorByName = asyncHandler(async (req, res, next) => {
+  const { firstName, lastName } = req.params;
+  
+  const doctor = await User.findOne({
+    firstName: firstName,
+    lastName: lastName,
+    role: "Doctor"
+  });
+
+  if (!doctor) {
+    return next(new ErrorHandler("Doctor not found", 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    doctor
+  });
+});

@@ -15,7 +15,8 @@ import {
   deleteAdmin,
   updateAdmin,
   updateDoctor,
-  deleteDoctor
+  deleteDoctor,
+  getDoctorByName
 } from "../controllers/user.controllers.js";
 import {
   isAdminAuthenticated,
@@ -53,6 +54,7 @@ router.delete("/admin/:id", isAdminAuthenticated, deleteAdmin);
 
 /*______________________________DOCTOR ROUTES___________________________________________*/
 router.get("/doctors", getAllDoctors);
+router.get("/doctors/:firstName/:lastName", getDoctorByName);
 router
   .route("/doctor/register")
   .post(upload.single("avatar"), registerDoctor);
