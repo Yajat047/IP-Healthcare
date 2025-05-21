@@ -35,7 +35,7 @@ The e-HMS website is designed to be a standalone application that integrates var
 -   **Backend**: The native server is built using Node and Express with RESTful API design.
 -   **Machine Learning Models**: Predictive analytics for heart disease, diabetes, and thyroid conditions.
 -   **Secure Authentication**: Stateful JWT for managing user sessions.
--   **Cloud Storage**: Cloudinary for managing image uploads.
+-   **Image Storage**: Multer for managing image uploads.
 -   **Form Validation**: Zod for validating user inputs.
 -   **Database**: MongoDB for storing user and appointment data.
 
@@ -50,7 +50,7 @@ The e-HMS website is designed to be a standalone application that integrates var
 -   **Frontend**: React.js, compatible with modern web browsers.
 -   **Backend**: Node.js with Express.js, hosted on a server or cloud platform.
 -   **Database**: MongoDB, either locally hosted or cloud-based (e.g., MongoDB Atlas).
--   **Cloud Storage**: Cloudinary for image storage.
+-   **Image Storage**: Multer for image storage.
 -   **Machine Learning API**: Flask-based API for model integration.
 
 ### 3.5 Design and Implementation Constraints
