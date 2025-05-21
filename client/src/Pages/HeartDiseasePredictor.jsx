@@ -85,7 +85,7 @@ const handleSubmit = (e) => {
     thal: thalaNumeric,
   };
 
-  fetch("http://localhost:5000/heart-disease/predict", {
+  fetch("http://localhost:5001/heart-disease/predict", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

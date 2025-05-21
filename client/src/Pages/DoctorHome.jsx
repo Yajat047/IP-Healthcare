@@ -40,7 +40,7 @@ const DoctorHome = () => {
     const fetchAppointments = async () => {
       try {
         const { data } = await axios.get(
-          "http://localhost:8000/api/v1/appoinments/getall",
+          "http://localhost:8000/api/v1/appoinments/doctor",
           { withCredentials: true }
         );
         setAppointments(data.appointments);
@@ -72,7 +72,7 @@ const DoctorHome = () => {
       try {
         const storedDoctor = JSON.parse(localStorage.getItem('doctor'));
         const response = await axios.get(
-          `http://localhost:8000/api/v1/users/doctors/${storedDoctor._id}`,
+          `http://localhost:8000/api/v1/users/doctors/${encodeURIComponent(storedDoctor.firstName)}/${encodeURIComponent(storedDoctor.lastName)}`,
           { withCredentials: true }
         );
         setDoctorData(response.data.doctor);
@@ -255,6 +255,7 @@ const DoctorHome = () => {
             <tr>
               <th>Patient</th>
               <th>Date</th>
+              <th>Time</th>
               <th>Status</th>
               <th>Visited</th>
               <th>Actions</th>
@@ -270,14 +271,16 @@ const DoctorHome = () => {
                       {appointment.firstName} {appointment.lastName}
                     </td>
                     <td className="date text-center">
-                      {new Date(appointment.appointment_date).toLocaleDateString('en-GB', {
-                        day: '2-digit',
-                        month: '2-digit',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        hour12: true
-                      }).replace(/\//g, ' ')}
+                      {appointment.appointment_date
+                        ? new Date(appointment.appointment_date).toLocaleDateString('en-GB', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                          })
+                        : ''}
+                    </td>
+                    <td className="time text-center">
+                      {appointment.appointment_time || ''}
                     </td>
                     <td className="status text-center">
                       <select
@@ -344,7 +347,7 @@ const DoctorHome = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="5" className="text-center">
+                <td colSpan="6" className="text-center">
                   No appointments found
                 </td>
               </tr>

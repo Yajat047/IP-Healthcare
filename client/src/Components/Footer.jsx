@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export const Footer = () => {
   return (
@@ -6,9 +7,24 @@ export const Footer = () => {
       <div className="">
         <h4 className="text-lg font-semibold">Quick Links</h4>
         <ul>
-          <h6 className="text-slate-600">Home</h6>
-          <h6 className="text-slate-600">Appointment</h6>
-          <h6 className="text-slate-600">About us</h6>
+          <li>
+            <Link to="/" className="text-slate-600 hover:underline">
+              Home
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/appointment"
+              className="text-slate-600 hover:underline"
+            >
+              Book Appointment
+            </Link>
+          </li>
+          <li>
+            <Link to="/aboutus" className="text-slate-600 hover:underline">
+              About us
+            </Link>
+          </li>
         </ul>
       </div>
       <div className="">
@@ -33,29 +49,20 @@ export const Footer = () => {
         </ul>
       </div>
       <div className="">
-        <h4 className="text-lg font-semibold">Hours</h4>
+        <h4 className="text-lg font-semibold">Follow Us</h4>
         <ul>
-          <h6 className="text-slate-600">
-            Monday&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;09am-11pm
-          </h6>
-          <h6 className="text-slate-600">
-            Tuesday&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10am-11pm
-          </h6>
-          <h6 className="text-slate-600">
-            Wednesday&nbsp;&nbsp;&nbsp;10am-11pm
-          </h6>
-          {/* <h6 className="text-slate-600">
-            Thursday&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;11am-9pm
-          </h6> */}
-          <h6 className="text-slate-600">
-            Friday&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;11am-10pm
-          </h6>
-          <h6 className="text-slate-600">
-            Saturday&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;12pm-9pm
-          </h6>
-          <h6 className="text-slate-600">
-            Sunday&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;12pm-9pm
-          </h6>
+          <li className="flex items-center mb-2">
+            <img src="/email.png" alt="Email" className="w-4 h-4" />
+            <span className="text-slate-600">&nbsp;info@healthcare.com</span>
+          </li>
+          <li className="flex items-center mb-2">
+            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram" className="w-4 h-4" />
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-slate-600 hover:underline">&nbsp;Instagram</a>
+          </li>
+          <li className="flex items-center mb-2">
+            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg" alt="LinkedIn" className="w-4 h-4" />
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-slate-600 hover:underline">&nbsp;LinkedIn</a>
+          </li>
         </ul>
       </div>
     </div>

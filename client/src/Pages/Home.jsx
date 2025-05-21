@@ -66,7 +66,7 @@ const Home = () => {
           <div className="hero-text w-1/2 flex flex-col items-center ">
             <h1 className="font-semibold text-4xl">We are Aaragya</h1>
             <h1 className="text-3xl">We are here to provide world</h1>
-            <h1 className="text-3xl">class healthcare for everyone</h1>
+            <h1 className="text-3xl"> class healthcare for everyone</h1>
           </div>
         </div>
       </div>
@@ -78,16 +78,10 @@ const Home = () => {
             Find Doctors By Your Health Concern
           </h1>
         </div>
-        <div className="departments w-full h-fit px-20 mt-9 flex flex-wrap flex-shrink-0 justify-around">
+        <div className="departments w-full h-fit px-20 mt-9 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-10 gap-y-12 place-items-center">
           {departmentsArray.map((depart, index) => {
             return (
-              <div
-                //className="departments w-full h-fit px-20 mt-9 flex flex-wrap flex-shrink-0 justify-around"
-                value={depart}
-                key={index}
-              >
-                <Department data={depart} />
-              </div>
+              <Department data={depart} key={index} />
             );
           })}
         </div>

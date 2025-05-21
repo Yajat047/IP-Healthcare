@@ -20,7 +20,7 @@ const PatientHome = () => {
     const fetchAppointments = async () => {
       try {
         const { data } = await axios.get(
-          "http://localhost:8000/api/v1/appoinments/getall",
+          "http://localhost:8000/api/v1/appoinments/my",
           { withCredentials: true }
         );
         setAppointments(data.appointments);
@@ -66,6 +66,7 @@ const PatientHome = () => {
             <tr>
               <th>Patient Name</th>
               <th>Appointment Date</th>
+              <th>Appointment Time</th>
               <th>Appointment Status</th>
               <th>Doctor Name</th>
               <th>Doctor Department</th>
@@ -81,7 +82,16 @@ const PatientHome = () => {
                       {appointments[k].firstName} {appointments[k].lastName}
                     </td>
                     <td className="date text-center">
-                      {appointments[k].appointment_date.substring(0, 10)}
+                      {appointments[k].appointment_date
+                        ? new Date(appointments[k].appointment_date).toLocaleDateString('en-GB', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                          })
+                        : ''}
+                    </td>
+                    <td className="time text-center">
+                      {appointments[k].appointment_time || ''}
                     </td>
                     <td className="status text-center">
                       {appointments[k].status}
@@ -107,7 +117,7 @@ const PatientHome = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="6" className="text-center">
+                <td colSpan="7" className="text-center">
                   No Appointments Scheduled
                 </td>
               </tr>

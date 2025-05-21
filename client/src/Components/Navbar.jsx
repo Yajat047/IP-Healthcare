@@ -76,7 +76,7 @@ export const Navbar = () => {
             <Link to={"/"}>Home</Link>
           </li>
           <li>
-            <Link to={"/appointment"}>Appointment</Link>
+            <Link to={"/appointment"}>Book Appointment</Link>
           </li>
           <li>
             <Link to={"/aboutus"}>About us</Link>

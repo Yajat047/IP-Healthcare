@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { Navbar } from "../Components/Navbar";
 
 const ThyroidPredictor = () => {
@@ -21,7 +20,6 @@ const ThyroidPredictor = () => {
   const [recommendation, setRecommendation] = useState("");
   const [error, setError] = useState("");
 
-  // Handle change in form inputs
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -30,18 +28,15 @@ const ThyroidPredictor = () => {
     });
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); // Reset error
+    setError("");
 
-    // Prepare the data object to be sent to the backend
     const preparedData = {
       age: parseInt(formData.age),
       sex: formData.sex === "male" ? 0 : 1,
       on_thyroxine: formData.on_thyroxine === "yes" ? 1 : 0,
-      on_antithyroid_medication:
-        formData.on_antithyroid_medication === "yes" ? 1 : 0,
+      on_antithyroid_medication: formData.on_antithyroid_medication === "yes" ? 1 : 0,
       goitre: formData.goitre === "yes" ? 1 : 0,
       hypopituitary: formData.hypopituitary === "yes" ? 1 : 0,
       psych: formData.psych === "yes" ? 1 : 0,
@@ -52,11 +47,10 @@ const ThyroidPredictor = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:5000/thyroid/predict", {
+      const response = await fetch("http://localhost:5002/thyroid/predict", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify(preparedData),
       });
@@ -66,7 +60,7 @@ const ThyroidPredictor = () => {
         setPredictionResult(data.prediction);
         setRecommendation(data.recommendation);
       } else {
-        setError(data.error || "An error occurred during prediction");
+        setError(data.error || "An error occurred during prediction.");
       }
     } catch (error) {
       setError("Error: " + error.message);
@@ -81,7 +75,6 @@ const ThyroidPredictor = () => {
           Hypothyroidism Predictor
         </h2>
         <form
-          id="medical-form"
           onSubmit={handleSubmit}
           className="bg-white p-8 rounded-lg shadow-md w-full max-w-lg"
         >
@@ -125,9 +118,7 @@ const ThyroidPredictor = () => {
                 <input
                   type={key === "age" ? "number" : "text"}
                   step={
-                    ["T3", "TT4", "T4U", "FTI"].includes(key)
-                      ? "any"
-                      : undefined
+                    ["T3", "TT4", "T4U", "FTI"].includes(key) ? "any" : undefined
                   }
                   name={key}
                   id={key}
@@ -145,16 +136,19 @@ const ThyroidPredictor = () => {
             Predict
           </button>
         </form>
+
         {predictionResult && (
           <div className="mt-6 p-4 w-full max-w-lg bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 rounded-md shadow-md">
             Predicted Result: {predictionResult}
           </div>
         )}
+
         {recommendation && (
           <div className="mt-4 p-4 w-full max-w-lg bg-green-100 border-l-4 border-green-500 text-green-700 rounded-md shadow-md">
             Recommendation: {recommendation}
           </div>
         )}
+
         {error && (
           <div className="mt-4 p-4 w-full max-w-lg bg-red-100 border-l-4 border-red-500 text-red-700 rounded-md shadow-md">
             {error}
