@@ -146,6 +146,30 @@ const userSchema = new mongoose.Schema({
     required: function() {
       return this.role === "Doctor";
     }
+  },
+  // Add doctor working hours fields
+  startTime: {
+    type: String,
+    required: function() { return this.role === "Doctor"; },
+    default: "09:00"
+  },
+  endTime: {
+    type: String,
+    required: function() { return this.role === "Doctor"; },
+    default: "17:00"
+  },
+  workingDays: {
+    type: Object,
+    required: function() { return this.role === "Doctor"; },
+    default: {
+      Monday: true,
+      Tuesday: true,
+      Wednesday: true,
+      Thursday: true,
+      Friday: true,
+      Saturday: false,
+      Sunday: false
+    }
   }
 });
 

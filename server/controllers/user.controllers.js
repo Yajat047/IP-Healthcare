@@ -150,7 +150,8 @@ export const registerDoctor = asyncHandler(async (req, res, next) => {
     return next(new ErrorHandler("Doctor Avatar Required!", 400));
   }
 
-  const { firstName, lastName, email, phone, nic, dob, gender, doctorDepartment, password } =
+  // Add startTime, endTime, workingDays to destructure
+  const { firstName, lastName, email, phone, nic, dob, gender, doctorDepartment, password, startTime, endTime, workingDays } =
     req.body;
 
   validateFields({
@@ -170,6 +171,7 @@ export const registerDoctor = asyncHandler(async (req, res, next) => {
     return next(new ErrorHandler("Doctor already Registered!", 400));
   }
 
+  // Save timings and days
   const doc = await User.create({
     firstName,
     lastName,
@@ -184,6 +186,17 @@ export const registerDoctor = asyncHandler(async (req, res, next) => {
     avatar: {
       url: `http://localhost:8000/uploads/${req.file.filename}`,
     },
+    startTime: startTime || "09:00",
+    endTime: endTime || "17:00",
+    workingDays: workingDays ? JSON.parse(workingDays) : {
+      Monday: true,
+      Tuesday: true,
+      Wednesday: true,
+      Thursday: true,
+      Friday: true,
+      Saturday: false,
+      Sunday: false
+    }
   });
 
   const payload = await User.findById(doc._id).select(

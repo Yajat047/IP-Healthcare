@@ -203,10 +203,38 @@ const getBookedSlots = asyncHandler(async (req, res, next) => {
   });
 });
 
+const getMyAppointments = asyncHandler(async (req, res, next) => {
+  const patientId = req.user._id;
+  const appointments = await Appointment.find({ patientId });
+  res.status(200).json({
+    success: true,
+    appointments,
+  });
+});
+
+const getDoctorWorkingHours = asyncHandler(async (req, res, next) => {
+  const { doctorId } = req.params;
+  if (!doctorId) {
+    return next(new ErrorHandler("Doctor ID is required", 400));
+  }
+  const doctor = await User.findById(doctorId).select('startTime endTime workingDays');
+  if (!doctor) {
+    return next(new ErrorHandler("Doctor not found", 404));
+  }
+  res.status(200).json({
+    success: true,
+    startTime: doctor.startTime,
+    endTime: doctor.endTime,
+    workingDays: doctor.workingDays
+  });
+});
+
 export {
   postAppointment,
   getAllAppointments,
   updateAppointmentStatus,
   deleteAppointment,
-  getBookedSlots
+  getBookedSlots,
+  getMyAppointments,
+  getDoctorWorkingHours
 };
